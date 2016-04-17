@@ -1,0 +1,14 @@
+<html>
+  <head></head>
+  <body>
+	<h1>Initial Preferences</h1>
+	<h2>Popular Sites</h2>
+	<p>Here are some of the most popular sources our users encounter. Just so we can get a sense of your preferences, feel free to rank some of the sites you're familiar with on a scale from 1-10, according to how much you trust the source. If you don't have an opinion, just leave it blank. You can come back and rate it later, or add ratings for other sources you don't see here.</p>
+
+	<form action="/registration/ratings/" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit" class="btn btn-default"/>
+	</form>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+<html>
+  <head></head>
+  <body>
+  	<h1>Add Rating</h1>
+	<form action="/account/update/ratings/" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit" name="new" class="btn btn-default"/>
+	</form>
+	<h1>Update Ratings</h1>
+	<form action="/account/update/ratings/" method="post">
+    {% csrf_token %}
+    {{ form2.as_p }}
+    <input type="submit" value="Submit" name="update" class="btn btn-default"/>
+	</form>
+  </body>
+</html>

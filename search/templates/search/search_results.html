@@ -1,0 +1,15 @@
+<html>
+	<head>
+		<title>Search Results Page</title>
+	</head>
+	<body>
+		<h1>Search Results</h1>
+		{% for site, description, url, rating in search_results %}
+			<div>{{ site }}</div>
+			<div>{{ description }}</div>
+			<div><a href='{{ url }}'>Link</a></div>
+			<div>{{ rating }}</div>
+			<div><br></div>
+		{% endfor %}
+	</body>
+</html>

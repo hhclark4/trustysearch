@@ -1,0 +1,37 @@
+<html>
+  <head>
+
+  </head>
+  <body>
+	<div class="inner cover">
+       <h1>Log In</h1>
+            {% if form.errors %}
+            <p>Your username and password didn't match. Please try again.</p>
+            {% endif %}
+            <div class="row">
+              <div class="col-md">
+                <p class="lead">
+                  <form method="post" action="{% url 'search:login' %}">
+                  {% csrf_token %}
+                  <div style="padding-bottom: 20px">
+                  <table>
+                      <tr>
+                          <td>{{ form.username.label_tag }}</td>
+                          <td>{{ form.username }}</td>
+                      </tr>
+                      <tr>
+                          <td>{{ form.password.label_tag }}</td>
+                          <td>{{ form.password }}</td>
+                      </tr>
+                  </table>
+                  </div>
+                  <p>Need an account? <a href="/registration/info/"><u>Sign up</u></a> here.</p>
+                  <input type="submit" value="Log In" class="btn btn-lg btn-default"/>
+                  <input type="hidden" name="next" value="{{ next }}" />
+                  </form>
+                </p>
+              </div>
+            </div>
+          </div>
+  </body>
+</html>
