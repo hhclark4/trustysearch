@@ -55,3 +55,4 @@ class NewSourceForm(forms.Form):
 #Form to get search terms
 class SearchForm(forms.Form):
 	search = forms.CharField(label='Search', max_length=1000)
+

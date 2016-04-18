@@ -1,5 +1,8 @@
 import pprint
 import json
+import urllib2
+import urllib
+from urlparse import urlparse
 from operator import itemgetter
 
 from django.shortcuts import render
@@ -11,15 +14,16 @@ from django.contrib.auth.models import User
 
 from googleapiclient.discovery import build
 
-from .forms import UserForm, SearcherForm, InitialRatingsForm, UpdateRatingsForm, NewSourceForm, SearchForm
+#from .forms import UserForm, SearcherForm, InitialRatingsForm, UpdateRatingsForm, NewSourceForm, SearchForm
+from .forms import *
 from .models import Searcher, Source
 
 # Number of top sites to display for initial ratings
 TOP_SITES_COUNT = 15
 # Number of ratings needed to qualify as a top rating
 RATINGS_THRESHOLD = 10
-# Number of Google CSE queries to run for a given search
-NUM_QUERIES = 2
+# Number of results per page
+RESULTS_PER_PAGE = 5
 
 # Application Start Page
 def start(request):
@@ -207,6 +211,59 @@ def search(request):
 
 # Perform the user's search
 def process_search(request, search):
+	searcher = Searcher.objects.get(user=request.user)
+	preferences = json.loads(searcher.preferences)
+
+	keyBing = 'mqIg+kglN9vuB1eIoOp0AHSIQlm+K09P9u6E/fWdD74'
+	credentialBing = 'Basic ' + (':%s' % keyBing).encode('base64')[:-1]
+	query = "'{0}'".format(search)
+	query = urllib.quote_plus(query)
+	top = RESULTS_PER_PAGE
+	offset = 0
+
+	url = 'https://api.datamarket.azure.com/Bing/Search/News?' + \
+      'Query=%s&$top=%d&$skip=%d&$format=json' % (query, top, offset)
+
+	request = urllib2.Request(url)
+	request.add_header('Authorization', credentialBing)
+	requestOpener = urllib2.build_opener()
+	response = requestOpener.open(request) 
+
+	results = json.load(response)
+
+	sites = []
+	for i in results['d']['results']:
+		try:
+			title = i['Title']
+		except KeyError:
+			title = "[No Title]"
+		try:
+			description = i['Description']
+		except KeyError:
+			description = "[No Description]"
+		try:
+			url = i['Url']
+		except KeyError:
+			url = "[No Url]"
+
+		domain = urlparse(url).netloc
+		source = Source.objects.filter(website='http://' + domain)
+		if source.count() == 0:
+			rating = 0.0
+		else:
+			try:
+				user_rating = int(preferences[source[0].display_name])
+				rating = (source[0].avg_rating + user_rating) / 2
+			except KeyError:
+				rating = source[0].avg_rating
+
+		sites.append((title, description, url, rating))
+
+	sites.sort(key=lambda site: site[3], reverse=True)
+  	return sites
+
+'''
+def process_search(request, search):
 	service = build("customsearch", "v1",
         developerKey="AIzaSyB2skVifJVjjK3gmr5eIhp_GplvE35ZfNk")
 
@@ -246,6 +303,7 @@ def process_search(request, search):
 
   	sites.sort(key=lambda site: site[3], reverse=True)
   	return sites
+'''
 
 
 # Show the search results
@@ -257,7 +315,8 @@ def search_results(request):
 	if form.is_valid():
 		search = form.cleaned_data['search']
 		results = process_search(request, search)
-		return render(request, 'search/search_results.html', {'search_results': results,})
+		return render(request, 'search/search_results.html', 
+			{'search_results': results,})
 
 	form = SearchForm()
 	context = {
