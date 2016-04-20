@@ -1,3 +1,7 @@
+{% extends "search/base.html" %}
+
+{% block content %}
+
 <h1>Create an Account</h1>
 
 {% if error %}
@@ -12,3 +16,5 @@
     {{ form2.as_p }}
     <input type="submit" value="Submit" class="btn btn-default"/>
 </form>
+
+{% endblock %}

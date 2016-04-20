@@ -14,7 +14,6 @@ from django.contrib.auth.models import User
 
 from googleapiclient.discovery import build
 
-#from .forms import UserForm, SearcherForm, InitialRatingsForm, UpdateRatingsForm, NewSourceForm, SearchForm
 from .forms import *
 from .models import Searcher, Source
 
@@ -28,6 +27,10 @@ RESULTS_PER_PAGE = 5
 # Application Start Page
 def start(request):
 	return render(request, 'search/start.html', {})
+
+# Application About Page
+def about(request):
+	return render(request, 'search/about.html', {})
 
 # New User Information page
 def get_new_user_info(request):

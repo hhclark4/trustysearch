@@ -1,0 +1,105 @@
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  padding-top: 50px;
+  margin-bottom: 0px;
+  position: relative;
+
+}
+
+h2 {
+	padding-top: 5px;
+}
+
+img {
+  margin: 10px 15px 10px 15px;
+}
+
+.starter-template {
+  padding: 30px 0px;
+  text-align: left;
+}
+
+.container {
+  max-width: 700px;
+}
+
+.row {
+	margin: 0px 0px 0px 0px;
+}
+
+.footer {
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f0f0f0;
+}
+
+.text-muted {
+  margin: 20px 0;
+}
+
+label {
+  padding-left: 10px;
+}
+
+td {
+  padding: 10px;
+}
+
+.search_results {
+  max-width: 100%;
+  position: relative;
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.navbar {
+  background-color: #0e4c92;
+  border-color: #0e4c92;
+}
+
+.navbar-header .navbar-brand {
+  color: #fff;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+  color: #fff;
+
+}
+
+.btn-sq {
+  width: 35px;
+  height: 35px;
+}
+
+.row-results {
+  padding-bottom: 3px;
+  padding-top: 10px;
+  border-bottom: 2px solid #888899;
+}
+
+.no-classes {
+  padding: 70px;
+  text-align: center;
+}
+
+.big {
+  font-size: 110%;
+}
+
+.btn-primary {
+  background-color: #87cefa;
+  border-color: #87cefa;
+}
+.btn-primary:hover {
+  background-color: #0e4c92;
+}
+

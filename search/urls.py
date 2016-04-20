@@ -6,6 +6,8 @@ from . import views
 urlpatterns = [
 	#Start Page
     url(r'^$', views.start, name='start'),
+    #Application Info Page
+    url(r'^about/$', views.about, name='about'),
     #Login
     url(r'^login/$', login, 
     	{'template_name': 'registration/login.html', 'extra_context':

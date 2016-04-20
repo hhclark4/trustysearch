@@ -1,10 +1,44 @@
+{% load staticfiles %}
 <html>
-	<head>
-		<title>TrustySearch</title>
-	</head>
-	<body>
-		<h1>Welcome to TrustySearch!</h1>
-		<a href="/registration/info/" class="button">Sign Up</a>
-		<a href="login/" class="button">Log In</a>
-	</body>
+  <head>
+    <link href="{% static 'search/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
+    <link rel="stylesheet" href="{% static 'search/library/css/cover.css' %}" media="screen">
+  </head>
+
+  <body>
+    <div class="site-wrapper">
+      <div class="site-wrapper-inner">
+        <div class="cover-container">
+          <div class="masthead clearfix">
+            <div class="inner">
+              <h3 class="masthead-brand">TrustySearch</h3>
+              <nav>
+                <ul class="nav masthead-nav">
+                  <li class="active"><a href="/account/home/">Home</a></li>
+                  <li><a href="about">About</a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+
+          <div class="inner cover">
+            <h1 class="cover-heading">Welcome to TrustySearch.</h1>
+            <p class="lead">Get search results you trust. </p>
+            <p class="lead">
+              <a href="account/home/" class="btn btn-lg btn-default">Begin</a>
+            </p>
+          </div>
+
+          <div class="mastfoot">
+            <div class="inner">
+              <p>Built with Django and Bootstrap.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  
+    <script src="{% static 'search/bootstrap/js/bootstrap.min.js' %}"></script>
+  </body>
 </html>
