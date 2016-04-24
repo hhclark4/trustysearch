@@ -4,14 +4,14 @@
 
 <html>
 	<head>
-		<title>Search Results Page</title>
+		<title>TrustySearch Results</title>
 	</head>
 	<body>
-		<h1>Search Results</h1>
-		{% for site, description, url, rating in search_results %}
-			<div>{{ site }}</div>
+		<div style="padding-bottom:15px"><h1>TrustySearch Results</h1></div>
+		{% for title, description, url, display_url, rating in search_results %}
+			<div class="title"><a href='{{ url }}'>{{ title }}</a></div>
+			<div style="color:green">{{ display_url }}</div>
 			<div>{{ description }}</div>
-			<div><a href='{{ url }}'>Link</a></div>
 			<div>{{ rating }}</div>
 			<div><br></div>
 		{% endfor %}

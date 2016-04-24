@@ -4,15 +4,24 @@
 
 <html>
 	<head>
-		<title>Search Page</title>
+		<title>Search</title>
 	</head>
 	<body>
-		<h1>Search</h1>
-		<form action="/search/" method="post">
-			{% csrf_token %}
-			{{ form.as_p }}
-			<input type="submit" value="Submit" class="btn btn-default"/>
-		</form>
+		<div id="search-field">
+			<form action="/search/" method="post">
+				{% csrf_token %}
+				<div id="search-title"><h1>TrustySearch</h1></div>
+				<div><p>{{ form.search }}</p></div>
+				<div id="search-button">
+					<span style="padding-right:10px">
+						<input type="submit" name="_web" value="Web" class="btn btn-default btn-search"/>
+					</span>
+					<span>
+						<input type="submit" name="_news" value="News" class="btn btn-default btn-search"/>
+					</span>
+				</div>
+			</form>
+		</div>
 	</body>
 </html>
 

@@ -22,7 +22,7 @@ TOP_SITES_COUNT = 15
 # Number of ratings needed to qualify as a top rating
 RATINGS_THRESHOLD = 10
 # Number of results per page
-RESULTS_PER_PAGE = 5
+RESULTS_PER_PAGE = 3
 
 # Application Start Page
 def start(request):
@@ -203,8 +203,13 @@ def search(request):
 
 	if request.method == 'POST':
 		form = SearchForm(request.POST)
+		
 		if form.is_valid():
-			return search_results(request)
+			if '_web' in request.POST:
+				searchType = 'web'
+			else:
+				searchType = 'news'
+			return search_results(request, searchType)
 
 	form = SearchForm()
 	context = {
@@ -213,7 +218,7 @@ def search(request):
 	return render(request, 'search/search.html', context)
 
 # Perform the user's search
-def process_search(request, search):
+def process_search(request, search, searchType):
 	searcher = Searcher.objects.get(user=request.user)
 	preferences = json.loads(searcher.preferences)
 
@@ -223,9 +228,13 @@ def process_search(request, search):
 	query = urllib.quote_plus(query)
 	top = RESULTS_PER_PAGE
 	offset = 0
-
-	url = 'https://api.datamarket.azure.com/Bing/Search/News?' + \
-      'Query=%s&$top=%d&$skip=%d&$format=json' % (query, top, offset)
+	'''
+	if searchType == 'web':
+		url = 'https://api.datamarket.azure.com/Bing/Search/Web?' + \
+		'Query=%s&$top=%d&$skip=%d&$format=json' % (query, top, offset)
+	else:
+		url = 'https://api.datamarket.azure.com/Bing/Search/News?' + \
+		'Query=%s&$top=%d&$skip=%d&$format=json' % (query, top, offset)
 
 	request = urllib2.Request(url)
 	request.add_header('Authorization', credentialBing)
@@ -233,7 +242,8 @@ def process_search(request, search):
 	response = requestOpener.open(request) 
 
 	results = json.load(response)
-
+	'''
+	results = {u'd': {u'results': [{u'Description': u'On a break during a business trip to Washington last year, David Panton hailed a cab to take him to the Capitol. He told the driver he was going to see the Texas senator and presidential candidate Ted Cruz. \u201cHe\u2019s racist,\u201d the cabdriver replied ...', u'Title': u'In College Roommate David Panton, Ted Cruz Finds Unwavering Support', u'Url': u'http://www.nytimes.com/2016/04/24/us/politics/ted-cruz-college-roommate.html', u'__metadata': {u'type': u'NewsResult', u'uri': u"https://api.datamarket.azure.com/Data.ashx/Bing/Search/News?Query='ted cruz'&$skip=0&$top=1"}, u'Source': u'New York Times', u'Date': u'2016-04-23T22:18:02Z', u'ID': u'4190bb6c-d831-40a7-97e5-db6545d5bf26'}, {u'Description': u'AUSTIN, Texas (AP) \u2013 When Ted Cruz kicked off his White House bid at Liberty University, he told the crowd "y\'all can probably relate" to the $100,000-plus in student loan debt he ran up in college and paid off only a few years ago. Since then he\'s ...', u'Title': u"Student loan issues could be thorn in Ted Cruz's appeal to young voters", u'Url': u'http://latino.foxnews.com/latino/politics/2016/04/24/student-loan-issues-could-be-thorn-in-ted-cruz-appeal-to-young-voters/', u'__metadata': {u'type': u'NewsResult', u'uri': u"https://api.datamarket.azure.com/Data.ashx/Bing/Search/News?Query='ted cruz'&$skip=1&$top=1"}, u'Source': u'Latino  FOX News', u'Date': u'2016-04-24T17:16:12Z', u'ID': u'11442505-f9c7-4607-8581-7738a8f3d2af'}, {u'Description': u'Republican presidential candidate Ted Cruz is intensifying his attacks on chief rival Donald Trump, calling him a phony and liar who is betraying conservative voters. Over the course of Saturday at campaign stops in both Pennsylvania and Indiana, Cruz ...', u'Title': u"Ted Cruz: Trump Is \u2018Betraying Americans\u2019 Before He's Even Elected", u'Url': u'http://abcnews.go.com/Politics/ted-cruz-trump-betraying-americans-elected/story?id=38624204', u'__metadata': {u'type': u'NewsResult', u'uri': u"https://api.datamarket.azure.com/Data.ashx/Bing/Search/News?Query='ted cruz'&$skip=2&$top=1"}, u'Source': u'ABC News', u'Date': u'2016-04-23T08:13:21Z', u'ID': u'491e5b89-b1ad-4033-b1b9-aca6a958e502'}], u'__next': u"https://api.datamarket.azure.com/Data.ashx/Bing/Search/News?Query='ted%20cruz'&$skip=3&$top=3"}}
 	sites = []
 	for i in results['d']['results']:
 		try:
@@ -246,6 +256,7 @@ def process_search(request, search):
 			description = "[No Description]"
 		try:
 			url = i['Url']
+			display_url = i['Url'][:62] + "..."
 		except KeyError:
 			url = "[No Url]"
 
@@ -260,7 +271,7 @@ def process_search(request, search):
 			except KeyError:
 				rating = source[0].avg_rating
 
-		sites.append((title, description, url, rating))
+		sites.append((title, description, url, display_url, rating))
 
 	sites.sort(key=lambda site: site[3], reverse=True)
   	return sites
@@ -310,14 +321,14 @@ def process_search(request, search):
 
 
 # Show the search results
-def search_results(request):
+def search_results(request, searchType):
 	if not request.user.is_authenticated():
 		return HttpResponseRedirect('/login/')
 
 	form = SearchForm(request.POST)
 	if form.is_valid():
 		search = form.cleaned_data['search']
-		results = process_search(request, search)
+		results = process_search(request, search, searchType)
 		return render(request, 'search/search_results.html', 
 			{'search_results': results,})
 
